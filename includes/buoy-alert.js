@@ -301,8 +301,9 @@
             events: {
                 'click': function (e) {
                     if (e.target === this.$submit_button.get(0)) {
-                        this.el.disabled = true;
-                        $(this.el).html('Schedule alert', 'buoy'); // buoy_vars.i18n_scheduling_alert);
+                        $(this.el).modal('show');                    // a hack. modal should stay on screen, but this isn't the best solution
+                        this.$submit_button.prop('disabled', true);
+                        this.$submit_button.html(buoy_vars.i18n_scheduling_alert);
                         this.scheduleAlert();
                         sharedEventBus.trigger(sharedEventBus.events.showSubmittingAlertModalEvent);
                     }
@@ -319,7 +320,7 @@
                 var self = this;
 
                 function hideModal() {
-                    self.$submit_button.disabled = false;
+                    self.$submit_button.prop('disabled', false);
                     self.$submit_button.html(buoy_vars.i18n_schedule_alert);
                     sharedEventBus.trigger(sharedEventBus.events.hideSubmittingModalEvent);
                 }
@@ -339,7 +340,7 @@
                             $(self.el).find('.has-error').removeClass('has-error');
                             $(self.el).find('[aria-invalid]').removeAttr('aria-invalid');
                             $(self.el).find('div.alert[role="alert"]').remove();
-                            this.$modal_body.find(' > :first-child')
+                            jQuery('#scheduled-alert-modal .modal-body > :first-child')
                                 .before('<div class="alert alert-success" role="alert"><p>' + response.data.message + '</p></div>');
                             jQuery('#scheduled-alert-modal input, #scheduled-alert-modal textarea').val('');
                         } else {
