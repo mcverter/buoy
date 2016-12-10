@@ -335,7 +335,7 @@
                     }).get(),
                     "buoy_nonce": $("#buoy_nonce").val()
                 };
-                jQuery.post(ajaxurl, data,         // Backbone aliases jQuery.post as "save" which is misleading here
+                $.post(ajaxurl, data,         // Backbone aliases jQuery.post as "save" which is misleading here
                     function (response) {
                         if (response.success) {
                             $(self.el).find(".has-error").removeClass("has-error");
@@ -428,13 +428,13 @@
         });
         function unscheduleAlert(e) {
             e.preventDefault();
-            var a_el = jQuery(this);
-            jQuery.post(a_el.attr("href"), {"action": "buoy_unschedule_alert"},
+            var a_el = $(this);
+            $.post(a_el.attr("href"), {"action": "buoy_unschedule_alert"},
                 function (response) {
                     if (response.success) {
                         a_el.remove();
                         if (0 === BUOY.countIncidentMenuItems()) {
-                            jQuery("#wp-admin-bar-buoy-alert-menu").remove();
+                            $("#wp-admin-bar-buoy-alert-menu").remove();
                         }
                     }
                 },
