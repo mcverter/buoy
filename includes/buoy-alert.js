@@ -427,15 +427,14 @@
             $(this).on('click', unscheduleAlert);
         });
         function unscheduleAlert(e) {
-            var self = this;
             e.preventDefault();
-            $.post(this.attributes.href,
-                {'action': 'buoy_unschedule_alert'},
+            var a_el = jQuery(this);
+            jQuery.post(a_el.attr('href'), {'action': 'buoy_unschedule_alert'},
                 function (response) {
                     if (response.success) {
-                        self.el.remove();
+                        a_el.remove();
                         if (0 === BUOY.countIncidentMenuItems()) {
-                            sharedEventBus.trigger(sharedEventBus.events.zeroScheduledAlertsEvent)
+                            jQuery('#wp-admin-bar-buoy-alert-menu').remove();
                         }
                     }
                 },
