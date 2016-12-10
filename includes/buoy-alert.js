@@ -55,7 +55,7 @@
  */
 (function ($) {
 
-    'use strict';
+    "use strict";
 
     var sharedEventBus = _.extend({}, Backbone.Events);
     sharedEventBus.events = {
