@@ -53,7 +53,7 @@
 
 
  */
-(function ($) {
+(function ($, _, Backbone) {
 
     "use strict";
 
@@ -450,4 +450,4 @@
         MessageTeamNamespace.initialize();
         ScheduleAlertNamespace.initialize();
     });
-}(jQuery));
+}(jQuery, _, Backbone));
