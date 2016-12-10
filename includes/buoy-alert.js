@@ -55,11 +55,13 @@
  */
 (function ($) {
 
+    'use strict';
+
     var sharedEventBus = _.extend({}, Backbone.Events);
     sharedEventBus.events = {
-        showSubmittingAlertModalEvent: 'showSubmittingAlertModalEvent',
-        hideSubmittingModalEvent: 'hideSubmittingModalEvent',
-        showChooseTeamsPanelEvent: 'showChooseTeamsPanelEvent'
+        showSubmittingAlertModalEvent: "showSubmittingAlertModalEvent",
+        hideSubmittingModalEvent: "hideSubmittingModalEvent",
+        showChooseTeamsPanelEvent: "showChooseTeamsPanelEvent"
     };
 
 
@@ -71,7 +73,7 @@
     function activateAlert() {
         // Always post an alert even if we fail to get geolocation.
         navigator.geolocation.getCurrentPosition(postAlert, postAlert, {
-            'timeout': 5000 // wait max of 5 seconds to get a location
+            "timeout": 5000 // wait max of 5 seconds to get a location
         });
         // In Firefox, if the user clicks "Not now" when asked to give
         // geolocation permissions, the above timeout never gets called.
@@ -94,16 +96,16 @@
                 clearTimeout(submit_alert_timer_id);
             }
             var data = {
-                'action': $('#activate-alert-form input[name="action"]').val(),
-                'buoy_nonce': $('#buoy_nonce').val()
+                "action": $('#activate-alert-form input[name="action"]').val(),
+                "buoy_nonce": $("#buoy_nonce").val()
             };
             if (position && position.coords) {
                 data.pos = position.coords;
             }
-            if ($('#crisis-message').val()) {
-                data.msg = $('#crisis-message').val();
+            if ($("#crisis-message").val()) {
+                data.msg = $("#crisis-message").val();
             }
-            var teams = $('#choose-teams-panel :checked').map(function () {
+            var teams = $("#choose-teams-panel :checked").map(function () {
                 return this.value;
             }).get();
             if (teams.length) {
@@ -113,10 +115,10 @@
                 function (response) {
                     if (response.success) {
                         // decode the HTML-encoded stuff WP sends
-                        window.location.href = $('<div/>').html(response.data).text();
+                        window.location.href = $("<div/>").html(response.data).text();
                     }
                 },
-                'json'
+                "json"
             );
         }
     }
@@ -130,15 +132,15 @@
      This Panel shows a list of Teams to send an alert or message to.
      It is employed by the MessageTeams and ScheduleAlert Namespaces and requires the global event bus.
      */
-    var chooseTeamsPanelNamespace = (function () {
+    var ChooseTeamsPanelNamespace = (function () {
         var ChooseTeamsPanel = Backbone.View.extend({
-            el: '#choose-teams-panel', //buoy_dom_hooks.choose_teams_panel,
+            el: "#choose-teams-panel", //buoy_dom_hooks.choose_teams_panel,
             initialize: function () {
                 this.listenTo(sharedEventBus, sharedEventBus.events.showChooseTeamsPanelEvent, this.showPanel);
 
             },
             showPanel: function () {
-                $(this.el).removeClass('hidden');
+                $(this.el).removeClass("hidden");
             }
         });
 
@@ -148,7 +150,7 @@
 
         return {
             initialize: initialize
-        }
+        };
     }());
 
 
@@ -156,29 +158,29 @@
      This Modal Dialog is shown after the submission of an alert
      It is employed by several of the modals and requires the global event bus.
      */
-    var submittingAlertModalNamespace = (function () {
-        var submittingAlertModal = Backbone.View.extend({
-            el: '#submitting-alert-modal', // buoy_dom_hooks.activate_button_submit,
+    var SubmittingAlertModalNamespace = (function () {
+        var SubmittingAlertModal = Backbone.View.extend({
+            el: "#submitting-alert-modal", // buoy_dom_hooks.activate_button_submit,
             initialize: function () {
                 this.listenTo(sharedEventBus, sharedEventBus.events.showSubmittingAlertModalEvent, this.showModal);
                 this.listenTo(sharedEventBus, sharedEventBus.events.hideSubmittingModalEvent, this.hideModal);
 
             },
             showModal: function () {
-                $(this.el).modal({'show': true, 'backdrop': 'static'});
+                $(this.el).modal({"show": true, "backdrop": "static"});
             },
             hideModal: function () {
-                $(this.el).modal('hide');
+                $(this.el).modal("hide");
             }
         });
 
         function initialize() {
-            this.submittingAlertModal = new submittingAlertModal();
+            this.submittingAlertModal = new SubmittingAlertModal();
         }
 
         return {
             initialize: initialize
-        }
+        };
     }());
 
     /*
@@ -196,15 +198,15 @@
      **  External Functions
      **    * activateAlert
      */
-    var messageTeamNamespace = (function () {
+    var MessageTeamNamespace = (function () {
         var messageEventBus = _.extend({}, Backbone.Events);
         messageEventBus.showMessageModalEvent = "showMessageModalEvent";
 
         /* Button used to Show the Message Modal*/
         var MainTeamMessageButton = Backbone.View.extend({
-            el: '#custom-message-alert-btn',//buoy_dom_hooks.custom_alert_button,
+            el: "#custom-message-alert-btn",//buoy_dom_hooks.custom_alert_button,
             events: {
-                'click': function () {
+                "click": function () {
                     messageEventBus.trigger(messageEventBus.showMessageModalEvent);
                 }
             }
@@ -212,25 +214,25 @@
 
         /* Entire Message Modal */
         var TeamMessageModal = Backbone.View.extend({
-            el: '#emergency-message-modal', //buoy_dom_hooks.emergency_message_modal,
+            el: "#emergency-message-modal", //buoy_dom_hooks.emergency_message_modal,
             events: {
-                'click': function (e) {
-                    if (e.target == this.$submit_button.get(0)) {
+                "click": function (e) {
+                    if (e.target === this.$submit_button.get(0)) {
                         sharedEventBus.trigger(sharedEventBus.events.showSubmittingAlertModalEvent);
                         activateAlert();
                     }
                 }
             },
             initialize: function () {
-                this.$modal_body = $(this.el).find('.modal-body');
-                this.$submit_button = $(this.el).find('button.btn-success');
-                this.$message_text = $(this.el).find('#crisis-message');
-                this.listenTo(messageEventBus, messageEventBus.showMessageModalEvent, this.showModal)
+                this.$modal_body = $(this.el).find(".modal-body");
+                this.$submit_button = $(this.el).find("button.btn-success");
+                this.$message_text = $(this.el).find("#crisis-message");
+                this.listenTo(messageEventBus, messageEventBus.showMessageModalEvent, this.showModal);
             },
             showModal: function () {
-                $(this.el).modal('show');
+                $(this.el).modal("show");
                 sharedEventBus.trigger(sharedEventBus.events.showChooseTeamsPanelEvent, this.showPanel);
-                this.$modal_body.append($('#choose-teams-panel').detach());
+                this.$modal_body.append($("#choose-teams-panel").detach());
                 this.$message_text.focus();
             }
         });
@@ -243,7 +245,7 @@
 
         return {
             initialize: initialize
-        }
+        };
     }());
 
     /*
@@ -260,15 +262,15 @@
      *   * scheduleAlert
      **
      */
-    var scheduleAlertNamespace = (function () {
+    var ScheduleAlertNamespace = (function () {
         var scheduleEventBus = _.extend({}, Backbone.Events);
         scheduleEventBus.showScheduleModalEvent = "showScheduleModalEvent";
 
         /* Button used to Show the Schedule Alert Modal */
         var MainScheduleAlertButton = Backbone.View.extend({
-            el: '#schedule-future-alert-btn', //buoy_dom_hooks.timed_alert_button,
+            el: "#schedule-future-alert-btn", //buoy_dom_hooks.timed_alert_button,
             events: {
-                'click': function () {
+                "click": function () {
                     scheduleEventBus.trigger(scheduleEventBus.showScheduleModalEvent);
                 }
             }
@@ -276,32 +278,32 @@
 
         /* Entire Schedule Alert Modal */
         var ScheduleAlertModal = Backbone.View.extend({
-            el: '#scheduled-alert-modal',//buoy_dom_hooks.scheduled_alert_modal,
+            el: "#scheduled-alert-modal",//buoy_dom_hooks.scheduled_alert_modal,
             initialize: function () {
-                this.$modal_body = $(this.el).find('.modal-body');
-                this.$message_text = $(this.el).find('#scheduled-crisis-message');
-                this.$date_time_picker = $(this.el).find('#scheduled-datetime-tz');
-                this.$submit_button = $(this.el).find('button.btn-success');
+                this.$modal_body = $(this.el).find(".modal-body");
+                this.$message_text = $(this.el).find("#scheduled-crisis-message");
+                this.$date_time_picker = $(this.el).find("#scheduled-datetime-tz");
+                this.$submit_button = $(this.el).find("button.btn-success");
 
                 this.listenTo(scheduleEventBus, scheduleEventBus.showScheduleModalEvent, this.showModal);
 
 
                 if (this.$date_time_picker.length) {
                     this.$date_time_picker.datetimepicker({
-                        'lazyInit': true,
-                        'lang': buoy_vars.ietf_language_tag,
-                        'minDate': 0, // today is the earliest allowable date
-                        'mask': true,
-                        'validateOnBlur': false
+                        "lazyInit": true,
+                        "lang": buoy_vars.ietf_language_tag,
+                        "minDate": 0, // today is the earliest allowable date
+                        "mask": true,
+                        "validateOnBlur": false
 
                     });
                 }
             },
             events: {
-                'click': function (e) {
+                "click": function (e) {
                     if (e.target === this.$submit_button.get(0)) {
-                        $(this.el).modal('show');                    // a hack. modal should stay on screen, but this isn't the best solution
-                        this.$submit_button.prop('disabled', true);
+                        $(this.el).modal("show");                    // a hack. modal should stay on screen, but this isn"t the best solution
+                        this.$submit_button.prop("disabled", true);
                         this.$submit_button.html(buoy_vars.i18n_scheduling_alert);
                         this.scheduleAlert();
                         sharedEventBus.trigger(sharedEventBus.events.showSubmittingAlertModalEvent);
@@ -310,8 +312,8 @@
             },
             showModal: function () {
                 sharedEventBus.trigger(sharedEventBus.events.showChooseTeamsPanelEvent, this.showPanel);
-                this.$modal_body.append($('#choose-teams-panel').detach());
-                $(this.el).modal('show');
+                this.$modal_body.append($("#choose-teams-panel").detach());
+                $(this.el).modal("show");
             },
 
             /* Submits a new alert to the server */
@@ -319,40 +321,40 @@
                 var self = this;
 
                 function hideModal() {
-                    self.$submit_button.prop('disabled', false);
+                    self.$submit_button.prop("disabled", false);
                     self.$submit_button.html(buoy_vars.i18n_schedule_alert);
                     sharedEventBus.trigger(sharedEventBus.events.hideSubmittingModalEvent);
                 }
 
                 var data = {
-                    'action': $('#activate-alert-form input[name="action"]').val(),
-                    'msg': $('#scheduled-crisis-message').val(),
-                    'scheduled-datetime-utc': new Date($('#scheduled-datetime-tz').val()).toUTCString(),
-                    'buoy_teams': $('#choose-teams-panel :checked').map(function () {
+                    "action": $('#activate-alert-form input[name="action"]').val(),
+                    "msg": $("#scheduled-crisis-message").val(),
+                    "scheduled-datetime-utc": new Date($("#scheduled-datetime-tz").val()).toUTCString(),
+                    "buoy_teams": $("#choose-teams-panel :checked").map(function () {
                         return this.value;
                     }).get(),
-                    'buoy_nonce': $('#buoy_nonce').val()
+                    "buoy_nonce": $("#buoy_nonce").val()
                 };
                 jQuery.post(ajaxurl, data,         // Backbone aliases jQuery.post as "save" which is misleading here
                     function (response) {
                         if (response.success) {
-                            $(self.el).find('.has-error').removeClass('has-error');
-                            $(self.el).find('[aria-invalid]').removeAttr('aria-invalid');
+                            $(self.el).find(".has-error").removeClass("has-error");
+                            $(self.el).find("[aria-invalid]").removeAttr("aria-invalid");
                             $(self.el).find('div.alert[role="alert"]').remove();
-                            jQuery('#scheduled-alert-modal .modal-body > :first-child')
-                                .before('<div class="alert alert-success" role="alert"><p>' + response.data.message + '</p></div>');
-                            jQuery('#scheduled-alert-modal input, #scheduled-alert-modal textarea').val('');
+                            $("#scheduled-alert-modal .modal-body > :first-child")
+                                .before('<div class="alert alert-success" role="alert"><p>' + response.data.message + "</p></div>");
+                            $("#scheduled-alert-modal input, #scheduled-alert-modal textarea").val("");
                         } else {
-                            for (k in response.data) {
-                                $('#' + response.data[k].code).parent().addClass('has-error');
-                                $('#' + response.data[k].code).attr('aria-invalid', true);
-                                $('<div class="alert alert-danger" role="alert"><p>' + response.data[k].message + '</p></div>')
-                                    .insertBefore('#' + response.data[k].code);
+                            for (var k in response.data) {
+                                $("#" + response.data[k].code).parent().addClass("has-error");
+                                $("#" + response.data[k].code).attr("aria-invalid", true);
+                                $('<div class="alert alert-danger" role="alert"><p>' + response.data[k].message + "</p></div>")
+                                    .insertBefore("#" + response.data[k].code);
                             }
                         }
                         hideModal()
                     },
-                    'json'
+                    "json"
                 );
             }
         });
@@ -387,18 +389,17 @@
      * Within this view is the "submit_button"
      *  which submits the alert to the server
      */
-    var activateAlertNamespace = (function () {
+    var ActivateAlertNamespace = (function () {
         /* Form contains *all* central page content, including the other main UI buttons */
         var ActivateAlertForm = Backbone.View.extend({
-            el: '#activate-alert-form', //buoy_dom_hooks.activate_alert_form,
+            el: "#activate-alert-form", //buoy_dom_hooks.activate_alert_form,
             initialize: function () {
-                this.submit_button = $(this.el).find('#activate-btn-submit');
+                this.submit_button = $(this.el).find("#activate-btn-submit");
             },
             events: {
-                'submit': function (e) {
+                "submit": function (e) {
                     e.preventDefault();
-                    this.submit_button.prop('disabled', true);
-
+                    this.submit_button.prop("disabled", true);
                     sharedEventBus.trigger(sharedEventBus.events.showSubmittingAlertModalEvent);
                     activateAlert()
 
@@ -421,32 +422,32 @@
      *
      *  Currently, we are punting on this and just including the previous jQuery code
      */
-    var menubarScheduledAlertsNamespace = (function () {
-        $('#wp-admin-bar-buoy_my_scheduled_alerts a').each(function () {
-            $(this).on('click', unscheduleAlert);
+    var MenubarScheduledAlertsNamespace = (function () {
+        $("#wp-admin-bar-buoy_my_scheduled_alerts a").each(function () {
+            $(this).on("click", unscheduleAlert);
         });
         function unscheduleAlert(e) {
             e.preventDefault();
             var a_el = jQuery(this);
-            jQuery.post(a_el.attr('href'), {'action': 'buoy_unschedule_alert'},
+            jQuery.post(a_el.attr("href"), {"action": "buoy_unschedule_alert"},
                 function (response) {
                     if (response.success) {
                         a_el.remove();
                         if (0 === BUOY.countIncidentMenuItems()) {
-                            jQuery('#wp-admin-bar-buoy-alert-menu').remove();
+                            jQuery("#wp-admin-bar-buoy-alert-menu").remove();
                         }
                     }
                 },
-                'json'
+                "json"
             );
         }
     }());
 
     $(document).ready(function () {
-        activateAlertNamespace.initialize();
-        chooseTeamsPanelNamespace.initialize();
-        submittingAlertModalNamespace.initialize();
-        messageTeamNamespace.initialize();
-        scheduleAlertNamespace.initialize();
+        ActivateAlertNamespace.initialize();
+        ChooseTeamsPanelNamespace.initialize();
+        SubmittingAlertModalNamespace.initialize();
+        MessageTeamNamespace.initialize();
+        ScheduleAlertNamespace.initialize();
     });
 }(jQuery));
