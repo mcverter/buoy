@@ -59,7 +59,7 @@
     sharedEventBus.events = {
         showSubmittingAlertModalEvent: 'showSubmittingAlertModalEvent',
         hideSubmittingModalEvent: 'hideSubmittingModalEvent',
-        showMessageModalEvent: 'showMessageModalEvent'
+        showChooseTeamsPanelEvent: 'showChooseTeamsPanelEvent'
     };
 
 
@@ -135,7 +135,6 @@
             el: '#choose-teams-panel', //buoy_dom_hooks.choose_teams_panel,
             initialize: function () {
                 this.listenTo(sharedEventBus, sharedEventBus.events.showChooseTeamsPanelEvent, this.showPanel);
-                this.listenTo(sharedEventBus, sharedEventBus.events.showMessageModalEvent, this.showPanel)
 
             },
             showPanel: function () {
@@ -205,7 +204,7 @@
         var MainTeamMessageButton = Backbone.View.extend({
             el: '#custom-message-alert-btn',//buoy_dom_hooks.custom_alert_button,
             events: {
-                'click': function (e) {
+                'click': function () {
                     messageEventBus.trigger(messageEventBus.showMessageModalEvent);
                 }
             }
