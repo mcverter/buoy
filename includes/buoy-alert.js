@@ -51,9 +51,7 @@
 
  */
 (function ($, _, Backbone) {
-
-  "use strict";
-
+    
   var sharedEventBus = _.extend({}, Backbone.Events);
   sharedEventBus.events = {
     showSubmittingAlertModalEvent: "showSubmittingAlertModalEvent",
@@ -131,7 +129,6 @@
       el: "#choose-teams-panel", //buoy_dom_hooks.choose_teams_panel,
       initialize: function () {
         this.listenTo(sharedEventBus, sharedEventBus.events.showChooseTeamsPanelEvent, this.showPanel);
-
       },
       showPanel: function () {
         $(this.el).removeClass("hidden");
@@ -157,7 +154,6 @@
       initialize: function () {
         this.listenTo(sharedEventBus, sharedEventBus.events.showSubmittingAlertModalEvent, this.showModal);
         this.listenTo(sharedEventBus, sharedEventBus.events.hideSubmittingModalEvent, this.hideModal);
-
       },
       showModal: function () {
         $(this.el).modal({"show": true, "backdrop": "static"});
@@ -286,7 +282,6 @@
             "minDate": 0, // today is the earliest allowable date
             "mask": true,
             "validateOnBlur": false
-
           });
         }
       },
@@ -357,7 +352,7 @@
 
     return {
       initialize: initialize
-    }
+    };
   }());
 
   /**
@@ -392,8 +387,7 @@
           e.preventDefault();
           this.submit_button.prop("disabled", true);
           sharedEventBus.trigger(sharedEventBus.events.showSubmittingAlertModalEvent);
-          activateAlert()
-
+          activateAlert();
         }
       }
     });
